@@ -110,7 +110,12 @@ export function useLatencyLab() {
   }, [repository]);
 
   const commit = useCallback(
-    (next: WorkspaceDocument, nextStatus: LabStatus = "editing") => {
+    (
+      next: WorkspaceDocument,
+      nextStatus: LabStatus = "editing",
+      force = false,
+    ) => {
+      const previous = documentRef.current;
       const currentRevision = ++revision.current;
       documentRef.current = next;
       setDocument(next);
@@ -118,7 +123,7 @@ export function useLatencyLab() {
       setNotice("");
       setPersisted("saving");
       queue.current = queue.current
-        .then(() => repository.save(next))
+        .then(() => repository.save(next, force ? null : previous))
         .then(() => {
           if (revision.current === currentRevision) {
             setPersisted("saved");
@@ -263,7 +268,8 @@ export function useLatencyLab() {
 
   const retrySave = useCallback(() => {
     const current = documentRef.current;
-    if (current) commit(current);
+    // 重试时全量保存，补齐上次失败可能漏写的项目
+    if (current) commit(current, "editing", true);
   }, [commit]);
 
   return {

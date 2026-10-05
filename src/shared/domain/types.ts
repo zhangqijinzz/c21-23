@@ -36,6 +36,13 @@ export interface WorkspaceDocument {
   projects: LatencyProject[];
 }
 
+export interface WorkspaceMeta {
+  version: 2;
+  activeProjectId: string;
+  projectIds: string[];
+  savedAt: number;
+}
+
 export type SimulationMode = "low" | "expected" | "high";
 
 export interface TimelineEntry {
