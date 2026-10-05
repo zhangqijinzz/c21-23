@@ -91,13 +91,16 @@ export function useLatencyLab() {
     let mounted = true;
     void repository
       .load()
-      .then(({ document: loaded, recovered }) => {
+      .then(({ document: loaded, recovered, migrated, seeded }) => {
         if (!mounted) return;
         documentRef.current = loaded;
         setDocument(loaded);
         setStatus("ready");
-        if (recovered)
-          setNotice("已载入示例工作区；后续修改会自动保存到此设备。");
+        if (seeded) setNotice("已载入示例工作区；后续修改会自动保存到此设备。");
+        else if (migrated)
+          setNotice("已将历史工作区自动转换为按项目存储，内容完整保留。");
+        else if (recovered)
+          setNotice("已通过本地恢复副本还原工作区，建议确认内容后继续。");
       })
       .catch(() => {
         if (!mounted) return;
@@ -118,6 +121,7 @@ export function useLatencyLab() {
       setNotice("");
       setPersisted("saving");
       queue.current = queue.current
+        // 仓储按项目计算差异：编辑只写变化的项目，切换当前项目只提交索引。
         .then(() => repository.save(next))
         .then(() => {
           if (revision.current === currentRevision) {

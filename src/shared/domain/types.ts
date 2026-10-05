@@ -31,7 +31,6 @@ export interface LatencyProject {
 }
 
 export interface WorkspaceDocument {
-  version: 1;
   activeProjectId: string;
   projects: LatencyProject[];
 }

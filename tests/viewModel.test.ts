@@ -15,7 +15,6 @@ import { EXAMPLE_PROJECT } from "../src/shared/domain/types";
 describe("project and scenario view models", () => {
   it("creates a project and switches the active project", () => {
     const initial = {
-      version: 1 as const,
       activeProjectId: EXAMPLE_PROJECT.id,
       projects: [EXAMPLE_PROJECT],
     };
@@ -29,7 +28,6 @@ describe("project and scenario view models", () => {
 
   it("duplicates a project and remaps its dependency identities", () => {
     const initial = {
-      version: 1 as const,
       activeProjectId: EXAMPLE_PROJECT.id,
       projects: [EXAMPLE_PROJECT],
     };
